@@ -4,7 +4,7 @@ android {
     compileSdkVersion 26
     defaultConfig {
         applicationId "com.saeniel.citypicker"
-        minSdkVersion 15
+        minSdkVersion 19
         targetSdkVersion 26
         versionCode 1
         versionName "1.0"
@@ -27,4 +27,6 @@ dependencies {
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.1'
     compile 'com.jakewharton:butterknife:8.8.1'
     compile 'com.github.lecho:hellocharts-library:1.5.8@aar'
+    compile group: 'org.apache.poi', name: 'poi', version: '3.9'
+
 }
