@@ -20,6 +20,7 @@ import android.widget.TextView;
 import com.jjoe64.graphview.DefaultLabelFormatter;
 import com.jjoe64.graphview.GraphView;
 import com.jjoe64.graphview.LegendRenderer;
+import com.jjoe64.graphview.helper.StaticLabelsFormatter;
 import com.jjoe64.graphview.series.DataPoint;
 import com.jjoe64.graphview.series.LineGraphSeries;
 
@@ -83,6 +84,14 @@ public class CityInfoActivity extends AppCompatActivity {
                 dataPoints[i] = new DataPoint(excelYears[i], excelMoney[i]);
             }
 
+            String[] yearLabels = new String[excelYears.length];
+            for (int i = 0; i < excelYears.length; i++) {
+                yearLabels[i] = new String(String.valueOf(excelYears[i]));
+            }
+
+            StaticLabelsFormatter staticLabelsFormatter = new StaticLabelsFormatter(graph);
+            staticLabelsFormatter.setHorizontalLabels(yearLabels);
+
             series = new LineGraphSeries<>(dataPoints);
             series.setTitle("foo");
 
@@ -90,6 +99,7 @@ public class CityInfoActivity extends AppCompatActivity {
             graph.getLegendRenderer().setAlign(LegendRenderer.LegendAlign.TOP);
             graph.getViewport().setScrollable(true);
             graph.addSeries(series);
+            graph.getGridLabelRenderer().setLabelFormatter(staticLabelsFormatter);
 
         }
     }
