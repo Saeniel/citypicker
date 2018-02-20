@@ -9,12 +9,19 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
+import android.provider.ContactsContract;
 import android.provider.DocumentsContract;
 import android.provider.MediaStore;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import com.jjoe64.graphview.DefaultLabelFormatter;
+import com.jjoe64.graphview.GraphView;
+import com.jjoe64.graphview.LegendRenderer;
+import com.jjoe64.graphview.series.DataPoint;
+import com.jjoe64.graphview.series.LineGraphSeries;
 
 import org.apache.poi.hssf.usermodel.HSSFCell;
 import org.apache.poi.hssf.usermodel.HSSFRow;
@@ -23,15 +30,7 @@ import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-
-import lecho.lib.hellocharts.model.Axis;
-import lecho.lib.hellocharts.model.AxisValue;
-import lecho.lib.hellocharts.model.Line;
-import lecho.lib.hellocharts.model.LineChartData;
-import lecho.lib.hellocharts.model.PointValue;
-import lecho.lib.hellocharts.view.LineChartView;
+import java.text.NumberFormat;
 
 /**
  * Created by Saeniel on 18.02.2018.
@@ -42,11 +41,13 @@ public class CityInfoActivity extends AppCompatActivity {
     ImageView imvCityPicture;
     TextView tvCityDescription;
     Context context;
-    LineChartView chart;
+    GraphView graph;
     Uri filePath;
     String realPath;
     static int[] excelYears;
     static double[] excelMoney;
+
+    static LineGraphSeries<DataPoint> series;
 
     public static final int PICK_FILE = 1;
 
@@ -54,7 +55,7 @@ public class CityInfoActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_city_info);
-        chart = (LineChartView) findViewById(R.id.chart);
+        graph = (GraphView) findViewById(R.id.graph);
         context = getApplicationContext();
 
         Intent intent = new Intent();
@@ -76,48 +77,20 @@ public class CityInfoActivity extends AppCompatActivity {
                 e.printStackTrace();
             }
 
-            List<PointValue> values = new ArrayList<PointValue>();
-            for(int k = 0; k < excelYears.length; k++) {
-                values.add(new PointValue((float)excelYears[k], (float)excelMoney[k]));
-            }
-            Line line = new Line(values).setColor(Color.GREEN).setCubic(true);
-            List<Line> lines = new ArrayList<Line>();
-            lines.add(line);
+            DataPoint[] dataPoints = new DataPoint[excelMoney.length];
 
-            /*List<Integer> axisValuesForX = new ArrayList<>();
-            List<Double> axisValuesForY = new ArrayList<>();
-
-            for(int i = 0; i < excelYears.length; i++) {
-                axisValuesForX.add(excelYears[i]);
+            for (int i = 0; i < excelYears.length; i++) {
+                dataPoints[i] = new DataPoint(excelYears[i], excelMoney[i]);
             }
 
-            for(int i = 0; i < excelMoney.length; i++) {
-                axisValuesForY.add(excelMoney[i]);
-            }*/
+            series = new LineGraphSeries<>(dataPoints);
+            series.setTitle("foo");
 
-            List<AxisValue> axisValuesX = new ArrayList<AxisValue>();
-            for(int i = 0; i < excelYears.length; i++) {
-                axisValuesX.add(new AxisValue(i, ("" + excelYears[i]).toCharArray()));
-            }
+            graph.getLegendRenderer().setVisible(true);
+            graph.getLegendRenderer().setAlign(LegendRenderer.LegendAlign.TOP);
+            graph.getViewport().setScrollable(true);
+            graph.addSeries(series);
 
-            List<AxisValue> axisValuesY = new ArrayList<AxisValue>();
-            for(int i = 0; i < excelMoney.length; i++) {
-                axisValuesY.add(new AxisValue(i, ("" + excelMoney[i]).toCharArray()));
-            }
-
-            Axis axisX = new Axis(axisValuesX);
-            axisX.setHasLines(true);
-            axisX.setTextColor(Color.BLACK);
-
-            Axis axisY = new Axis(axisValuesY);
-            axisY.setHasLines(true);
-            axisY.setTextColor(Color.BLACK);
-
-            LineChartData dataChart = new LineChartData();
-            dataChart.setLines(lines);
-            dataChart.setAxisYLeft(axisY);
-            dataChart.setAxisXBottom(axisX);
-            chart.setLineChartData(dataChart);
         }
     }
 
@@ -140,8 +113,6 @@ public class CityInfoActivity extends AppCompatActivity {
             cell = money.getCell(j);
             excelMoney[j] = cell.getNumericCellValue();
         }
-
-
     }
 
     public static String getPath(final Context context, final Uri uri) {

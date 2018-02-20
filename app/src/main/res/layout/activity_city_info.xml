@@ -54,8 +54,8 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/tvCityArea" />
 
-        <lecho.lib.hellocharts.view.LineChartView
-            android:id="@+id/chart"
+        <com.jjoe64.graphview.GraphView
+            android:id="@+id/graph"
             android:layout_width="match_parent"
             android:layout_height="200sp"
             app:layout_constraintEnd_toEndOf="parent"
