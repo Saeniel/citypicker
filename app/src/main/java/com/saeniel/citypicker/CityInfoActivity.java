@@ -71,6 +71,9 @@ public class CityInfoActivity extends AppCompatActivity {
                 new String[]{Manifest.permission.READ_EXTERNAL_STORAGE,
                              Manifest.permission.WRITE_EXTERNAL_STORAGE},
                 1);
+
+        Bundle extra = getIntent().getExtras();
+        int id = extra.getInt("id");
     }
 
     @Override
