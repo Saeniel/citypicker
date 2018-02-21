@@ -95,44 +95,6 @@ public class CityInfoActivity extends AppCompatActivity {
         }
     }
 
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data)
-    {
-        /*if (requestCode == PICK_FILE && data != null) {
-            filePath = data.getData();
-            realPath = getPath(context, filePath);
-            try {
-                readFromExcel(realPath);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-
-            DataPoint[] dataPoints = new DataPoint[excelMoney.length];
-
-            for (int i = 0; i < excelYears.length; i++) {
-                dataPoints[i] = new DataPoint(excelYears[i], excelMoney[i]);
-            }
-
-            String[] yearLabels = new String[excelYears.length];
-            for (int i = 0; i < excelYears.length; i++) {
-                yearLabels[i] = new String(String.valueOf(excelYears[i]));
-            }
-
-            StaticLabelsFormatter staticLabelsFormatter = new StaticLabelsFormatter(graph);
-            staticLabelsFormatter.setHorizontalLabels(yearLabels);
-
-            series = new LineGraphSeries<>(dataPoints);
-            series.setTitle("foo");
-
-            graph.getLegendRenderer().setVisible(true);
-            graph.getLegendRenderer().setAlign(LegendRenderer.LegendAlign.TOP);
-            graph.getViewport().setScrollable(true);
-            graph.addSeries(series);
-            graph.getGridLabelRenderer().setLabelFormatter(staticLabelsFormatter);
-
-        } */
-    }
-
     public void fillData() {
 
         Bundle extra = getIntent().getExtras();
@@ -161,7 +123,7 @@ public class CityInfoActivity extends AppCompatActivity {
         } catch (Exception e) { throw new RuntimeException(e); }
 
         try {
-            readFromExcel(f.getPath());
+            readFromExcel(f.getPath(), id);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -188,12 +150,96 @@ public class CityInfoActivity extends AppCompatActivity {
         graph.getGridLabelRenderer().setLabelFormatter(staticLabelsFormatter);
     }
 
-    public static void readFromExcel(String file) throws IOException {
+    public static void readFromExcel(String file, int id) throws IOException {
+        int yearRow = 0;
+        int moneyRow = 0;
         HSSFWorkbook myExcelBook = new HSSFWorkbook(new FileInputStream(file));
-        HSSFSheet myExcelSheet = myExcelBook.getSheet("list1");
-        HSSFRow years = myExcelSheet.getRow(0);
-        HSSFRow money = myExcelSheet.getRow(1);
+        HSSFSheet myExcelSheet = myExcelBook.getSheet("list");
+
+        switch (id) {
+            case 0: {
+                yearRow = 1;
+                moneyRow = 2;
+                break;
+            }
+            case 1: {
+                yearRow = 4;
+                moneyRow = 5;
+                break;
+            }
+            case 2: {
+                yearRow = 7;
+                moneyRow = 8;
+                break;
+            }
+            case 3: {
+                yearRow = 10;
+                moneyRow = 11;
+                break;
+            }
+            case 4: {
+                yearRow = 13;
+                moneyRow = 14;
+                break;
+            }
+            case 5: {
+                yearRow = 16;
+                moneyRow = 17;
+                break;
+            }
+            case 6: {
+                yearRow = 19;
+                moneyRow = 20;
+                break;
+            }
+            case 7: {
+                yearRow = 22;
+                moneyRow = 23;
+                break;
+            }
+            case 8: {
+                yearRow = 25;
+                moneyRow = 26;
+                break;
+            }
+            case 9: {
+                yearRow = 28;
+                moneyRow = 29;
+                break;
+            }
+            case 10: {
+                yearRow = 31;
+                moneyRow = 32;
+                break;
+            }
+            case 11: {
+                yearRow = 34;
+                moneyRow = 35;
+                break;
+            }
+            case 12: {
+                yearRow = 37;
+                moneyRow = 38;
+                break;
+            }
+            case 13: {
+                yearRow = 40;
+                moneyRow = 41;
+                break;
+            }
+            case 14: {
+                yearRow = 43;
+                moneyRow = 44;
+                break;
+            }
+        }
+
+        HSSFRow years = myExcelSheet.getRow(yearRow);
+        HSSFRow money = myExcelSheet.getRow(moneyRow);
         HSSFCell cell;
+
+        int a = years.getPhysicalNumberOfCells();
+        int b = years.getPhysicalNumberOfCells();
 
         excelYears = new int[years.getPhysicalNumberOfCells()];
         excelMoney = new double[money.getPhysicalNumberOfCells()];
