@@ -1,0 +1,107 @@
+[
+  {
+    "name": "Aqtay'",
+    "description": "Описание города Aqtay'",
+    "area": "Площадь Aqtay' 10000 км2",
+    "population": "Население Aqtay' 100000 человек",
+	"image": "uralsk"
+  },
+  {
+    "name": "Atyray'",
+    "description": "Описание города Atyray'",
+    "area": "Площадь Atyray' 10000 км2",
+    "population": "Население Atyray' 100000 человек",
+	"image": "uralsk"
+  },
+  {
+    "name": "Oral",
+    "description": "Описание города Oral",
+    "area": "Площадь Oral 10000 км2",
+    "population": "Население Oral 100000 человек",
+	"image": "uralsk"
+  },
+  {
+    "name": "Aqto'be",
+    "description": "Описание города Aqto'be",
+    "area": "Площадь Aqto'be 10000 км2",
+    "population": "Население Aqto'be 100000 человек",
+	"image": "uralsk"
+  },
+  {
+    "name": "Qostanai'",
+    "description": "Описание города Qostanai'",
+    "area": "Площадь Qostanai' 10000 км2",
+    "population": "Население Qostanai' 100000 человек",
+	"image": "uralsk"
+  },
+  {
+    "name": "Qyzylorda",
+    "description": "Описание города Qyzylorda",
+    "area": "Площадь Qyzylorda 10000 км2",
+    "population": "Население Qyzylorda 100000 человек",
+	"image": "uralsk"
+  },
+  {
+    "name": "Astana",
+    "description": "Описание города Astana",
+    "area": "Площадь Astana 10000 км2",
+    "population": "Население Astana 100000 человек",
+	"image": "uralsk"
+  },
+  {
+    "name": "Ko'ks'etay'",
+    "description": "Описание города Ko'ks'etay'",
+    "area": "Площадь Ko'ks'etay' 10000 км2",
+    "population": "Население Ko'ks'etay' 100000 человек",
+	"image": "uralsk"
+  },
+  {
+    "name": "Petropavl",
+    "description": "Описание города Petropavl",
+    "area": "Площадь Petropavl 10000 км2",
+    "population": "Население Petropavl 100000 человек",
+	"image": "uralsk"
+  },
+  {
+    "name": "Qarag'andy",
+    "description": "Описание города Qarag'andy",
+    "area": "Площадь Qarag'andy 10000 км2",
+    "population": "Население Qarag'andy 100000 человек",
+	"image": "uralsk"
+  },
+  {
+    "name": "Taraz",
+    "description": "Описание города Taraz",
+    "area": "Площадь Taraz 10000 км2",
+    "population": "Население Taraz 100000 человек",
+	"image": "uralsk"
+  },
+  {
+    "name": "S'ymkent",
+    "description": "Описание города S'ymkent",
+    "area": "Площадь S'ymkent 10000 км2",
+    "population": "Население S'ymkent 100000 человек",
+	"image": "uralsk"
+  },
+  {
+    "name": "Almaty",
+    "description": "Описание города Almaty",
+    "area": "Площадь Almaty 10000 км2",
+    "population": "Население Almaty 100000 человек",
+	"image": "uralsk"
+  },
+  {
+    "name": "O'skemen",
+    "description": "Описание города O'skemen",
+    "area": "Площадь O'skemen 10000 км2",
+    "population": "Население O'skemen 100000 человек",
+	"image": "uralsk"
+  },
+  {
+    "name": "Pavlodar",
+    "description": "Описание города Pavlodar",
+    "area": "Площадь Pavlodar 10000 км2",
+    "population": "Население Pavlodar 100000 человек",
+	"image": "uralsk"
+  }
+]

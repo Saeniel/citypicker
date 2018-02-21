@@ -57,79 +57,79 @@ public class MainActivity extends AppCompatActivity {
                 Intent intent;
 
                 if(x > aqtay[0] && x < aqtay[2] && y > aqtay[1] && y < aqtay[3]) {
-                    // 1 Aqtay'
+                    // 0 Aqtay'
+                    intent = new Intent(MainActivity.this, CityInfoActivity.class);
+                    intent.putExtra("id", 0);
+                    startActivity(intent);
+                } else if(x > atyray[0] && x < atyray[2] && y > atyray[1] && y < atyray[3]) {
+                    // 1 Atyray'
                     intent = new Intent(MainActivity.this, CityInfoActivity.class);
                     intent.putExtra("id", 1);
                     startActivity(intent);
-                } else if(x > atyray[0] && x < atyray[2] && y > atyray[1] && y < atyray[3]) {
-                    // 2 Atyray'
+                } else if (x > oral[0] && x < oral[2] && y > oral[1] && y < oral[3]) {
+                    // 2 Oral
                     intent = new Intent(MainActivity.this, CityInfoActivity.class);
                     intent.putExtra("id", 2);
                     startActivity(intent);
-                } else if (x > oral[0] && x < oral[2] && y > oral[1] && y < oral[3]) {
-                    // 3 Oral
+                } else if(x > aqtobe[0] && x < aqtobe[2] && y > aqtobe[1] && y < aqtobe[3]) {
+                    // 3 Aqto'be
                     intent = new Intent(MainActivity.this, CityInfoActivity.class);
                     intent.putExtra("id", 3);
                     startActivity(intent);
-                } else if(x > aqtobe[0] && x < aqtobe[2] && y > aqtobe[1] && y < aqtobe[3]) {
-                    // 4 Aqto'be
+                } else if(x > qostanai[0] && x < qostanai[2] && y > qostanai[1] && y < qostanai[3]) {
+                    //  4 Qostanai'
                     intent = new Intent(MainActivity.this, CityInfoActivity.class);
                     intent.putExtra("id", 4);
                     startActivity(intent);
-                } else if(x > qostanai[0] && x < qostanai[2] && y > qostanai[1] && y < qostanai[3]) {
-                    //  5 Qostanai'
+                } else if (x > qyzylorda[0] && x < qyzylorda[2] && y > qyzylorda[1] && y < qyzylorda[3]) {
+                    //  5 Qyzylorda
                     intent = new Intent(MainActivity.this, CityInfoActivity.class);
                     intent.putExtra("id", 5);
                     startActivity(intent);
-                } else if (x > qyzylorda[0] && x < qyzylorda[2] && y > qyzylorda[1] && y < qyzylorda[3]) {
-                    //  6 Qyzylorda
+                } else if(x > astana[0] && x < astana[2] && y > astana[1] && y < astana[3]) {
+                    // 6 Astana
                     intent = new Intent(MainActivity.this, CityInfoActivity.class);
                     intent.putExtra("id", 6);
                     startActivity(intent);
-                } else if(x > astana[0] && x < astana[2] && y > astana[1] && y < astana[3]) {
-                    // 7 Astana
+                } else if(x > koksetay[0] && x < koksetay[2] && y > koksetay[1] && y < koksetay[3]) {
+                    // 7 Ko'ks'etay'
                     intent = new Intent(MainActivity.this, CityInfoActivity.class);
                     intent.putExtra("id", 7);
                     startActivity(intent);
-                } else if(x > koksetay[0] && x < koksetay[2] && y > koksetay[1] && y < koksetay[3]) {
-                    // 8 Ko'ks'etay'
+                } else if(x > petropavl[0] && x < petropavl[2] && y > petropavl[1] && y < petropavl[3]) {
+                    // 8 Petropavl
                     intent = new Intent(MainActivity.this, CityInfoActivity.class);
                     intent.putExtra("id", 8);
                     startActivity(intent);
-                } else if(x > petropavl[0] && x < petropavl[2] && y > petropavl[1] && y < petropavl[3]) {
-                    // 9 Petropavl
+                } else if(x > qaragandy[0] && x < qaragandy[2] && y > qaragandy[1] && y < qaragandy[3]) {
+                    // 9 Qarag'andy
                     intent = new Intent(MainActivity.this, CityInfoActivity.class);
                     intent.putExtra("id", 9);
                     startActivity(intent);
-                } else if(x > qaragandy[0] && x < qaragandy[2] && y > qaragandy[1] && y < qaragandy[3]) {
-                    // 10 Qarag'andy
+                } else if(x > taraz[0] && x < taraz[2] && y > taraz[1] && y < taraz[3]) {
+                    // 10 Taraz
                     intent = new Intent(MainActivity.this, CityInfoActivity.class);
                     intent.putExtra("id", 10);
                     startActivity(intent);
-                } else if(x > taraz[0] && x < taraz[2] && y > taraz[1] && y < taraz[3]) {
-                    // 11 Taraz
+                } else if(x > symkent[0] && x < symkent[2] && y > symkent[1] && y < symkent[3]) {
+                    // 11 S'ymkent
                     intent = new Intent(MainActivity.this, CityInfoActivity.class);
                     intent.putExtra("id", 11);
                     startActivity(intent);
-                } else if(x > symkent[0] && x < symkent[2] && y > symkent[1] && y < symkent[3]) {
-                    // 12 S'ymkent
+                } else if(x > almaty[0] && x < almaty[2] && y > almaty[1] && y < almaty[3]) {
+                    // 12 Almaty
                     intent = new Intent(MainActivity.this, CityInfoActivity.class);
                     intent.putExtra("id", 12);
                     startActivity(intent);
-                } else if(x > almaty[0] && x < almaty[2] && y > almaty[1] && y < almaty[3]) {
-                    // 13 Almaty
+                } else if(x > oskemen[0] && x < oskemen[2] && y > oskemen[1] && y < oskemen[3]) {
+                    // 13 O'skemen
                     intent = new Intent(MainActivity.this, CityInfoActivity.class);
                     intent.putExtra("id", 13);
                     startActivity(intent);
-                } else if(x > oskemen[0] && x < oskemen[2] && y > oskemen[1] && y < oskemen[3]) {
-                    // 14 O'skemen
+                } else if(x > pavlodar[0] && x < pavlodar[2] && y > pavlodar[1] && y < pavlodar[3]) {
+                    // 14 Pavlodar
                     intent = new Intent(MainActivity.this, CityInfoActivity.class);
                     intent.putExtra("id", 14);
-                    startActivity(intent);
-                } else if(x > pavlodar[0] && x < pavlodar[2] && y > pavlodar[1] && y < pavlodar[3]) {
-                    // 15 Pavlodar
-                    intent = new Intent(MainActivity.this, CityInfoActivity.class);
-                    intent.putExtra("id", 15);
                     startActivity(intent);
                 }
 

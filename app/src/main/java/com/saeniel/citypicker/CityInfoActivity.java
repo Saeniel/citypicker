@@ -5,14 +5,11 @@ import android.content.ContentUris;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.content.res.AssetManager;
 import android.database.Cursor;
-import android.graphics.Color;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
-import android.provider.ContactsContract;
 import android.provider.DocumentsContract;
 import android.provider.MediaStore;
 import android.support.annotation.Nullable;
@@ -22,7 +19,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.jjoe64.graphview.DefaultLabelFormatter;
+import com.google.gson.Gson;
 import com.jjoe64.graphview.GraphView;
 import com.jjoe64.graphview.LegendRenderer;
 import com.jjoe64.graphview.helper.StaticLabelsFormatter;
@@ -39,7 +36,6 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.text.NumberFormat;
 
 /**
  * Created by Saeniel on 18.02.2018.
@@ -48,7 +44,7 @@ import java.text.NumberFormat;
 public class CityInfoActivity extends AppCompatActivity {
 
     ImageView imvCityPicture;
-    TextView tvCityDescription;
+    TextView tvCityDescription, tvCityArea, tvCityPopulation;
     Context context;
     GraphView graph;
     Uri filePath;
@@ -64,16 +60,22 @@ public class CityInfoActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_city_info);
-        graph = (GraphView) findViewById(R.id.graph);
+
+        graph = findViewById(R.id.graph);
+        imvCityPicture = findViewById(R.id.imvCityPicture);
+        tvCityDescription = findViewById(R.id.tvCityDescription);
+        tvCityArea = findViewById(R.id.tvCityArea);
+        tvCityPopulation = findViewById(R.id.tvCityPopulation);
+
         context = getApplicationContext();
 
-        ActivityCompat.requestPermissions(CityInfoActivity.this,
-                new String[]{Manifest.permission.READ_EXTERNAL_STORAGE,
-                             Manifest.permission.WRITE_EXTERNAL_STORAGE},
-                1);
-
-        Bundle extra = getIntent().getExtras();
-        int id = extra.getInt("id");
+        if(Integer.valueOf(android.os.Build.VERSION.SDK) >= 23) {
+            ActivityCompat.requestPermissions(CityInfoActivity.this,
+                    new String[]{Manifest.permission.READ_EXTERNAL_STORAGE,
+                            Manifest.permission.WRITE_EXTERNAL_STORAGE},1);
+        } else {
+            fillData();
+        }
     }
 
     @Override
@@ -81,58 +83,10 @@ public class CityInfoActivity extends AppCompatActivity {
                                            String permissions[], int[] grantResults) {
         switch (requestCode) {
             case 1: {
-
-                // If request is cancelled, the result arrays are empty.
                 if (grantResults.length > 0
                         && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-
-                    File f = new File(getCacheDir()+"/test.xls");
-                    if (!f.exists()) try {
-
-                        InputStream is = getAssets().open("test.xls");
-                        int size = is.available();
-                        byte[] buffer = new byte[size];
-                        is.read(buffer);
-                        is.close();
-
-                        FileOutputStream fos = new FileOutputStream(f);
-                        fos.write(buffer);
-                        fos.close();
-                    } catch (Exception e) { throw new RuntimeException(e); }
-
-                    try {
-                        readFromExcel(f.getPath());
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-
-                    DataPoint[] dataPoints = new DataPoint[excelMoney.length];
-
-                    for (int i = 0; i < excelYears.length; i++) {
-                        dataPoints[i] = new DataPoint(excelYears[i], excelMoney[i]);
-                    }
-
-                    String[] yearLabels = new String[excelYears.length];
-                    for (int i = 0; i < excelYears.length; i++) {
-                        yearLabels[i] = new String(String.valueOf(excelYears[i]));
-                    }
-
-                    StaticLabelsFormatter staticLabelsFormatter = new StaticLabelsFormatter(graph);
-                    staticLabelsFormatter.setHorizontalLabels(yearLabels);
-
-                    series = new LineGraphSeries<>(dataPoints);
-                    series.setTitle("foo");
-
-                    graph.getLegendRenderer().setVisible(true);
-                    graph.getLegendRenderer().setAlign(LegendRenderer.LegendAlign.TOP);
-                    graph.getViewport().setScrollable(true);
-                    graph.addSeries(series);
-                    graph.getGridLabelRenderer().setLabelFormatter(staticLabelsFormatter);
-
+                    fillData();
                 } else {
-
-                    // permission denied, boo! Disable the
-                    // functionality that depends on this permission.
                     Toast.makeText(CityInfoActivity.this, "Permission denied to read your External storage", Toast.LENGTH_SHORT).show();
                 }
                 return;
@@ -144,7 +98,7 @@ public class CityInfoActivity extends AppCompatActivity {
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data)
     {
-        if (requestCode == PICK_FILE && data != null) {
+        /*if (requestCode == PICK_FILE && data != null) {
             filePath = data.getData();
             realPath = getPath(context, filePath);
             try {
@@ -176,7 +130,62 @@ public class CityInfoActivity extends AppCompatActivity {
             graph.addSeries(series);
             graph.getGridLabelRenderer().setLabelFormatter(staticLabelsFormatter);
 
+        } */
+    }
+
+    public void fillData() {
+
+        Bundle extra = getIntent().getExtras();
+        int id = extra.getInt("id");
+
+        Gson gson = new Gson();
+        City[] founderArray = gson.fromJson(readFromAssetJSON(), City[].class);
+        String image = founderArray[id].image;
+
+        imvCityPicture.setImageResource(getResources().getIdentifier(image , "drawable", getPackageName()));
+        tvCityDescription.setText(founderArray[id].description);
+        tvCityArea.setText(founderArray[id].area);
+        tvCityPopulation.setText(founderArray[id].population);
+
+        File f = new File(getCacheDir()+"/test.xls");
+        if (!f.exists()) try {
+            InputStream is = getAssets().open("test.xls");
+            int size = is.available();
+            byte[] buffer = new byte[size];
+            is.read(buffer);
+            is.close();
+
+            FileOutputStream fos = new FileOutputStream(f);
+            fos.write(buffer);
+            fos.close();
+        } catch (Exception e) { throw new RuntimeException(e); }
+
+        try {
+            readFromExcel(f.getPath());
+        } catch (IOException e) {
+            e.printStackTrace();
         }
+
+        DataPoint[] dataPoints = new DataPoint[excelMoney.length];
+
+        for (int i = 0; i < excelYears.length; i++) {
+            dataPoints[i] = new DataPoint(excelYears[i], excelMoney[i]);
+        }
+
+        String[] yearLabels = new String[excelYears.length];
+        for (int i = 0; i < excelYears.length; i++) {
+            yearLabels[i] = new String(String.valueOf(excelYears[i]));
+        }
+
+        StaticLabelsFormatter staticLabelsFormatter = new StaticLabelsFormatter(graph);
+        staticLabelsFormatter.setHorizontalLabels(yearLabels);
+        series = new LineGraphSeries<>(dataPoints);
+        series.setTitle("foo");
+        graph.getLegendRenderer().setVisible(true);
+        graph.getLegendRenderer().setAlign(LegendRenderer.LegendAlign.TOP);
+        graph.getViewport().setScrollable(true);
+        graph.addSeries(series);
+        graph.getGridLabelRenderer().setLabelFormatter(staticLabelsFormatter);
     }
 
     public static void readFromExcel(String file) throws IOException {
@@ -198,6 +207,21 @@ public class CityInfoActivity extends AppCompatActivity {
             cell = money.getCell(j);
             excelMoney[j] = cell.getNumericCellValue();
         }
+    }
+
+    String readFromAssetJSON(){
+        String json = null;
+        try {
+            InputStream is = getAssets().open("city.json");
+            int size = is.available();
+            byte[] buffer = new byte[size];
+            is.read(buffer);
+            is.close();
+            json = new String(buffer, "UTF-8");
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
+        return json;
     }
 
     @Nullable
@@ -268,26 +292,14 @@ public class CityInfoActivity extends AppCompatActivity {
         return "com.android.externalstorage.documents".equals(uri.getAuthority());
     }
 
-    /**
-     * @param uri The Uri to check.
-     * @return Whether the Uri authority is DownloadsProvider.
-     */
     public static boolean isDownloadsDocument(Uri uri) {
         return "com.android.providers.downloads.documents".equals(uri.getAuthority());
     }
 
-    /**
-     * @param uri The Uri to check.
-     * @return Whether the Uri authority is MediaProvider.
-     */
     public static boolean isMediaDocument(Uri uri) {
         return "com.android.providers.media.documents".equals(uri.getAuthority());
     }
 
-    /**
-     * @param uri The Uri to check.
-     * @return Whether the Uri authority is Google Photos.
-     */
     public static boolean isGooglePhotosUri(Uri uri) {
         return "com.google.android.apps.photos.content".equals(uri.getAuthority());
     }
