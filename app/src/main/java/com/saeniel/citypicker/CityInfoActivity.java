@@ -15,6 +15,8 @@ import android.provider.MediaStore;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -45,10 +47,9 @@ public class CityInfoActivity extends AppCompatActivity {
 
     ImageView imvCityPicture;
     TextView tvCityDescription, tvCityArea, tvCityPopulation;
+    Button btnCalcNextYear;
     Context context;
     GraphView graph;
-    Uri filePath;
-    String realPath;
     static int[] excelYears;
     static double[] excelMoney;
 
@@ -66,6 +67,7 @@ public class CityInfoActivity extends AppCompatActivity {
         tvCityDescription = findViewById(R.id.tvCityDescription);
         tvCityArea = findViewById(R.id.tvCityArea);
         tvCityPopulation = findViewById(R.id.tvCityPopulation);
+        btnCalcNextYear = findViewById(R.id.btnCalcNextYear);
 
         context = getApplicationContext();
 
@@ -76,6 +78,45 @@ public class CityInfoActivity extends AppCompatActivity {
         } else {
             fillData();
         }
+
+        btnCalcNextYear.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                double lastYearSum = excelMoney[excelMoney.length - 1];
+                double preLastYearSum = excelMoney[excelMoney.length - 2];
+                double newMoney = ((lastYearSum-preLastYearSum)/preLastYearSum) * lastYearSum + lastYearSum;
+
+                int[] addExcelYears = new int[excelYears.length + 1];
+                double[] addExcelMoney = new double[excelMoney.length + 1];
+
+                for (int i = 0; i < excelYears.length; i++) {
+                    addExcelYears[i] = excelYears[i];
+                }
+                addExcelYears[addExcelYears.length - 1] = excelYears[excelYears.length - 1] + 1;
+
+                for (int i = 0; i < excelMoney.length; i++) {
+                    addExcelMoney[i] = excelMoney[i];
+                }
+                addExcelMoney[addExcelMoney.length - 1] = newMoney;
+
+                DataPoint[] dataPoints = new DataPoint[addExcelYears.length];
+                for (int i = 0; i < addExcelYears.length; i++) {
+                    dataPoints[i] = new DataPoint(addExcelYears[i], addExcelMoney[i]);
+                }
+
+                String[] yearLabels = new String[addExcelYears.length];
+                for (int i = 0; i < addExcelYears.length; i++) {
+                    yearLabels[i] = new String(String.valueOf(addExcelYears[i]));
+                }
+
+                StaticLabelsFormatter staticLabelsFormatter = new StaticLabelsFormatter(graph);
+                staticLabelsFormatter.setHorizontalLabels(yearLabels);
+                series = new LineGraphSeries<>(dataPoints);
+                graph.addSeries(series);
+                graph.getGridLabelRenderer().setLabelFormatter(staticLabelsFormatter);
+            }
+        });
     }
 
     @Override
@@ -87,7 +128,9 @@ public class CityInfoActivity extends AppCompatActivity {
                         && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     fillData();
                 } else {
-                    Toast.makeText(CityInfoActivity.this, "Permission denied to read your External storage", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(CityInfoActivity.this,
+                            "Permission denied to read your external storage",
+                            Toast.LENGTH_SHORT).show();
                 }
                 return;
             }
@@ -142,10 +185,6 @@ public class CityInfoActivity extends AppCompatActivity {
         StaticLabelsFormatter staticLabelsFormatter = new StaticLabelsFormatter(graph);
         staticLabelsFormatter.setHorizontalLabels(yearLabels);
         series = new LineGraphSeries<>(dataPoints);
-        series.setTitle("foo");
-        graph.getLegendRenderer().setVisible(true);
-        graph.getLegendRenderer().setAlign(LegendRenderer.LegendAlign.TOP);
-        graph.getViewport().setScrollable(true);
         graph.addSeries(series);
         graph.getGridLabelRenderer().setLabelFormatter(staticLabelsFormatter);
     }
@@ -238,9 +277,6 @@ public class CityInfoActivity extends AppCompatActivity {
         HSSFRow money = myExcelSheet.getRow(moneyRow);
         HSSFCell cell;
 
-        int a = years.getPhysicalNumberOfCells();
-        int b = years.getPhysicalNumberOfCells();
-
         excelYears = new int[years.getPhysicalNumberOfCells()];
         excelMoney = new double[money.getPhysicalNumberOfCells()];
 
@@ -270,83 +306,4 @@ public class CityInfoActivity extends AppCompatActivity {
         return json;
     }
 
-    @Nullable
-    public static String getPath(Context context, Uri uri) {
-        // DocumentProvider
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT && DocumentsContract.isDocumentUri(context, uri)) {
-            // ExternalStorageProvider
-            if (isExternalStorageDocument(uri)) {
-                final String docId = DocumentsContract.getDocumentId(uri);
-                final String[] split = docId.split(":");
-                final String type = split[0];
-
-                if ("primary".equalsIgnoreCase(type)) {
-                    return Environment.getExternalStorageDirectory() + "/" + split[1];
-                }
-            } else if (isDownloadsDocument(uri)) {// DownloadsProvider
-                final String id = DocumentsContract.getDocumentId(uri);
-                final Uri contentUri = ContentUris.withAppendedId(Uri.parse("content://downloads/public_downloads"), Long.valueOf(id));
-                return getDataColumn(context, contentUri, null, null);
-
-            } else if (isMediaDocument(uri)) { // MediaProvider
-                final String docId = DocumentsContract.getDocumentId(uri);
-                final String[] split = docId.split(":");
-                final String type = split[0];
-                Uri contentUri = null;
-                if ("image".equals(type)) {
-                    contentUri = MediaStore.Images.Media.EXTERNAL_CONTENT_URI;
-                } else if ("video".equals(type)) {
-                    contentUri = MediaStore.Video.Media.EXTERNAL_CONTENT_URI;
-                } else if ("audio".equals(type)) {
-                    contentUri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
-                }
-                final String selection = "_id=?";
-                final String[] selectionArgs = new String[]{split[1]};
-                return getDataColumn(context, contentUri, selection, selectionArgs);
-
-            }
-        } else if ("content".equalsIgnoreCase(uri.getScheme())) {// MediaStore (and general)
-            // Return the remote address
-            if (isGooglePhotosUri(uri))
-                return uri.getLastPathSegment();
-            return getDataColumn(context, uri, null, null);
-
-        } else if ("file".equalsIgnoreCase(uri.getScheme())) {// File
-            return uri.getPath();
-        }
-        return null;
-    }
-
-    public static String getDataColumn(Context context, Uri uri, String selection, String[] selectionArgs) {
-        Cursor cursor = null;
-        final String column = "_data";
-        final String[] projection = {column};
-        try {
-            cursor = context.getContentResolver().query(uri, projection, selection, selectionArgs, null);
-            if (cursor != null && cursor.moveToFirst()) {
-                final int index = cursor.getColumnIndexOrThrow(column);
-                return cursor.getString(index);
-            }
-        } finally {
-            if (cursor != null)
-                cursor.close();
-        }
-        return null;
-    }
-
-    public static boolean isExternalStorageDocument(Uri uri) {
-        return "com.android.externalstorage.documents".equals(uri.getAuthority());
-    }
-
-    public static boolean isDownloadsDocument(Uri uri) {
-        return "com.android.providers.downloads.documents".equals(uri.getAuthority());
-    }
-
-    public static boolean isMediaDocument(Uri uri) {
-        return "com.android.providers.media.documents".equals(uri.getAuthority());
-    }
-
-    public static boolean isGooglePhotosUri(Uri uri) {
-        return "com.google.android.apps.photos.content".equals(uri.getAuthority());
-    }
 }
